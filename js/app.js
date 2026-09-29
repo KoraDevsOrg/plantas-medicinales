@@ -61,61 +61,21 @@ class BotanyApp {
     this.drawerBackdrop.classList.toggle("active", open);
   }
 
-  getI18nLabels() {
-    const lang = this.i18n.getLang();
-    const labels = {
-      es: {
-        appTitle: "Kora Plantas Medicinales",
-        menuTitle: "Categorías",
-        offlineTag: "100% Offline",
-        searchPlaceholder: "Buscar por nombre, dolencia o síntoma...",
-        cultivationTitle: "Cultivo y Cosecha Casera:",
-        preparationTitle: "Preparación y Dosificación Segura:",
-        warningTitle: "Contraindicaciones:",
-        allCategories: "Todas las Plantas",
-        footer: "Kora Botanica • Software Libre MIT • Conocimiento Comunitario"
-      },
-      guc: {
-        appTitle: "Kora Wunu'u Mülianüin",
-        menuTitle: "Süchikuwaya",
-        offlineTag: "Ayatüsü namaa internet",
-        searchPlaceholder: "Achechawaa wunu'u süpüla wanülüü...",
-        cultivationTitle: "Apünajaa sulu'u piichi:",
-        preparationTitle: "A'lakajawaa sümaa asawaa:",
-        warningTitle: "Annoojolü cho'ujaain:",
-        allCategories: "Supushuwa'a Wunu'u",
-        footer: "Kora Botanica • Karalo'uta Anaasü MIT"
-      },
-      pbb: {
-        appTitle: "Kora Yu'tse Thegni",
-        menuTitle: "Ksxawte'saty",
-        offlineTag: "Internet fxi'ze'yã'",
-        searchPlaceholder: "Thegni kse'te yu'tse jxukwe...",
-        cultivationTitle: "Ki'te thegni yaacxte:",
-        preparationTitle: "Pi'sx yu'te ksa'j:",
-        warningTitle: "Mee jxupxte thegme:",
-        allCategories: "Tjuhnx Yu'tse",
-        footer: "Kora Botanica • Fxize'we'sx MIT"
-      }
-    };
-    return labels[lang] || labels.es;
-  }
-
   render() {
-    const l = this.getI18nLabels();
-    this.appTitle.textContent = l.appTitle;
-    this.offlineBadge.textContent = l.offlineTag;
-    this.footerText.textContent = l.footer;
-    this.drawerTitle.textContent = l.menuTitle;
-    this.searchInput.placeholder = l.searchPlaceholder;
+    // Textos estáticos obtenidos 100% vía SDK
+    this.appTitle.textContent = this.i18n.t("botanicaTitle");
+    this.offlineBadge.textContent = this.i18n.t("offlineTag");
+    this.footerText.textContent = this.i18n.t("botanicaFooter");
+    this.drawerTitle.textContent = this.i18n.t("botanicaMenu");
+    this.searchInput.placeholder = this.i18n.t("botanicaSearch");
 
-    // Renderizar categorías en el Drawer
+    // Drawer de categorías
     this.drawerList.innerHTML = "";
     const categories = [
-      { id: "all", label: l.allCategories },
-      { id: "digestivo", label: "Digestivo / Alapüna" },
-      { id: "cicatrizante", label: "Cicatrizante / Piel" },
-      { id: "respiratorio", label: "Respiratorio / Oono" }
+      { id: "all", label: this.i18n.t("botanicaAll") },
+      { id: "digestivo", label: "Digestivo" },
+      { id: "cicatrizante", label: "Cicatrizante" },
+      { id: "respiratorio", label: "Respiratorio" }
     ];
 
     categories.forEach((cat) => {
@@ -125,7 +85,7 @@ class BotanyApp {
       btn.addEventListener("click", () => {
         this.activeCategory = cat.id;
         this.toggleDrawer(false);
-        this.render();
+        this.renderList();
       });
       this.drawerList.appendChild(btn);
     });
@@ -134,7 +94,6 @@ class BotanyApp {
   }
 
   renderList() {
-    const l = this.getI18nLabels();
     this.mainContent.innerHTML = "";
 
     const filtered = PLANTS_DATA.filter((p) => {
@@ -149,7 +108,7 @@ class BotanyApp {
     if (filtered.length === 0) {
       this.mainContent.innerHTML = `
         <div style="text-align: center; padding: 40px 10px; color: var(--text-sub);">
-          <p style="font-size: 1.1rem;">🌱 No se encontraron plantas para esta búsqueda.</p>
+          <p style="font-size: 1.1rem;">${this.i18n.t("botanicaEmpty")}</p>
         </div>
       `;
       return;
@@ -170,31 +129,30 @@ class BotanyApp {
         <div class="svg-container">${p.svg}</div>
 
         <div class="section-block">
-          <h3>${l.cultivationTitle}</h3>
+          <h3>${this.i18n.t("botanicaCultivo")}</h3>
           <p>${this.i18n.getText(p.cultivation)}</p>
         </div>
 
         <div class="section-block">
-          <h3>${l.preparationTitle}</h3>
+          <h3>${this.i18n.t("botanicaPrep")}</h3>
           <p>${this.i18n.getText(p.preparation)}</p>
         </div>
 
         <div class="warning-box">
-          <strong>${l.warningTitle}</strong> ${this.i18n.getText(p.warning)}
+          <strong>${this.i18n.t("botanicaWarn")}</strong> ${this.i18n.getText(p.warning)}
         </div>
       `;
       this.mainContent.appendChild(card);
     });
   }
 
-  // Integración Kora Admin DB (Persistencia relacional SQLite)
   async initKoraSync() {
     if (typeof window.KoraSyncEngine !== "undefined") {
       const engine = new window.KoraSyncEngine({
         pkgName: "org.koradevs.botanica.plantas",
         appName: "Kora Plantas Medicinales",
         tableName: "mod_botanica_plantas",
-        currentHtmlVersion: "1.0.0",
+        currentHtmlVersion: "1.1.0",
         tableDdl: `
           CREATE TABLE IF NOT EXISTS mod_botanica_plantas (
             id TEXT PRIMARY KEY,
