@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kora Plantas Medicinales</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- SDK universal de persistencia y sincronización Kora -->
+  <script src="https://cdn.jsdelivr.net/gh/KoraDevsOrg/kora-web-sdk@main/kora-sync.js"></script>
+</head>
+<body>
+
+  <!-- Backdrop accesible del Drawer -->
+  <div id="drawerBackdrop" class="drawer-backdrop"></div>
+
+  <!-- Menú Hamburguesa Lateral -->
+  <aside id="sideDrawer" class="side-drawer">
+    <div class="drawer-header">
+      <h2 id="drawerTitle" style="font-size: 1.1rem; font-weight: 800;">Categorías</h2>
+      <button id="btnCloseDrawer" class="btn-hamburger" aria-label="Cerrar menú">✕</button>
+    </div>
+
+    <nav id="drawerList" class="drawer-list"></nav>
+
+    <div class="drawer-footer">
+      <label for="langSelect" style="font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 6px;">Idioma / Yuwe:</label>
+      <select id="langSelect" class="lang-select">
+        <option value="es">Español</option>
+        <option value="guc">Wayuunaiki</option>
+        <option value="pbb">Nasa Yuwe</option>
+      </select>
+    </div>
+  </aside>
+
+  <!-- Encabezado Principal -->
+  <header>
+    <div class="header-left">
+      <button id="btnOpenDrawer" class="btn-hamburger" aria-label="Abrir menú">☰</button>
+      <h1 id="appTitle">Kora Plantas Medicinales</h1>
+    </div>
+    <div id="offlineBadge" class="offline-badge">100% Offline</div>
+  </header>
+
+  <!-- Buscador Reactivo Offline -->
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre, dolencia o síntoma..." autocomplete="off">
+  </div>
+
+  <!-- Contenedor Principal de Fichas Botánicas -->
+  <main id="mainContent"></main>
+
+  <footer>
+    <span id="footerText">Kora Botanica • Software Libre MIT</span>
+  </footer>
+
+  <!-- Script modular de la aplicación -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
